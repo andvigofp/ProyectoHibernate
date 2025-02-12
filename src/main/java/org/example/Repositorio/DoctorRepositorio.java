@@ -236,12 +236,12 @@ public class DoctorRepositorio implements Repositorio<Doctor> {
                 if (citasDelDoctor != null && citasDelDoctor > 0) {
                     System.out.println("El doctor ya tiene una cita asignada con otro paciente y no puede tener múltiples citas.");
                 } else {
-                    // Crear una nueva cita y asignar doctor y paciente
-                    Cita nuevaCita = new Cita();
+                    // Crear una nueva cita
+                    Cita nuevaCita = new Cita(fecha, estado);
                     nuevaCita.setDoctor(doctor);
-                    nuevaCita.setPaciente(paciente);
-                    nuevaCita.setFecha(fecha);
-                    nuevaCita.setEstado(estado);
+
+                    // Usar el método addCita para añadir la cita al paciente y mantener la relación bidireccional
+                    paciente.addCita(nuevaCita);
 
                     // Guardar la cita en la base de datos
                     session.save(nuevaCita);

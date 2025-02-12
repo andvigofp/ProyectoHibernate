@@ -37,7 +37,17 @@ public class Cita {
         this.estado = estado;
     }
 
-    @Override
+    public void setPaciente(Paciente paciente) {
+        this.paciente = paciente;
+        paciente.getCitas().add(this);
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+        doctor.setCita(this);
+    }
+
+        @Override
     public String toString() {
         return "Cita{" +
                 "fecha=" + fecha +

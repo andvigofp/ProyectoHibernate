@@ -36,6 +36,8 @@ public class Doctor {
         this.telefono = telefono;
     }
 
+
+
     @Override
     public String toString() {
         return "Doctor{" +

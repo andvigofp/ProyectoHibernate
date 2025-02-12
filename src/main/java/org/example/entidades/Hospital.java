@@ -35,6 +35,11 @@ public class Hospital {
         this.ubicacion = ubicacion;
     }
 
+    public void addTratamiento(Tratamiento tratamiento) {
+        this.tratamientos.add(tratamiento);
+        tratamiento.setHospital(this);
+    }
+
     @Override
     public String toString() {
         return "Hospital{" +

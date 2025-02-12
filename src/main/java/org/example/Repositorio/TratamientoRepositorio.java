@@ -93,8 +93,10 @@ public class TratamientoRepositorio {
 
     // Método para cambiar el hospital de un tratamiento
     public void cambiarHospitalTratamiento(int tratamientoId, String nombreNuevoHospital) {
-        Transaction tx = session.beginTransaction();
+        Transaction tx = null;
         try {
+            tx = session.beginTransaction();
+
             // Obtener el tratamiento por su ID
             Tratamiento tratamiento = session.get(Tratamiento.class, tratamientoId);
 
@@ -105,19 +107,28 @@ public class TratamientoRepositorio {
 
             // Verificar que el tratamiento y el nuevo hospital existen
             if (tratamiento != null && nuevoHospital != null) {
-                tratamiento.setHospital(nuevoHospital);
+                // Eliminar el tratamiento de la lista del hospital actual
+                Hospital hospitalActual = tratamiento.getHospital();
+                if (hospitalActual != null) {
+                    hospitalActual.getTratamientos().remove(tratamiento);
+                }
+
+                // Añadir el tratamiento al nuevo hospital utilizando el método addTratamiento
+                nuevoHospital.addTratamiento(tratamiento);
+
                 session.update(tratamiento);
                 tx.commit();
                 System.out.println("Hospital del tratamiento cambiado con éxito.");
             } else {
                 System.out.println("No se encontró el tratamiento o el nuevo hospital.");
-                tx.rollback();
+                if (tx != null) tx.rollback();
             }
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         }
     }
+
 
 
     //Mostrar los datos del taratamiento de un hospital

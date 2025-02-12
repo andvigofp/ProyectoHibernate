@@ -40,6 +40,9 @@ public class Tratamiento {
         this.costo = costo;
     }
 
+
+
+
     @Override
     public String toString() {
         return "Tratamiento{" +

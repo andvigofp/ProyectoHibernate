@@ -45,6 +45,16 @@ public class Paciente {
         this.fechaNacimiento = fechaNacimiento;
         this.direccion = direccion;
     }
+    
+        public void addCita(Cita cita) {
+        this.citas.add(cita);
+        cita.setPaciente(this);
+    }
+
+    public void addRecibe(Recibe recibe) {
+        this.tratamientos.add(recibe);
+        recibe.setPaciente(this);
+    }
 
     @Override
     public String toString() {

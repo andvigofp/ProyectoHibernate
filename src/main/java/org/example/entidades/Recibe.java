@@ -38,6 +38,8 @@ public class Recibe {
         return id.getFechaInicio();
     }
 
+    
+
     @Override
     public String toString() {
         return "Recibe{" +
