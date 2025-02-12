@@ -82,7 +82,6 @@ public class TratamientoRepositorio {
     }
 
 
-
     //Método para comprobar si existe con ese nombre el hospital
     public boolean hospitalExiste(String nombreHospital) {
         Long count = (Long) session.createQuery("SELECT COUNT(h) FROM Hospital h WHERE h.nombre = :nombreHospital")
@@ -90,7 +89,6 @@ public class TratamientoRepositorio {
                 .uniqueResult();
         return count > 0;
     }
-
 
 
     // Método para cambiar el hospital de un tratamiento
@@ -131,9 +129,8 @@ public class TratamientoRepositorio {
 
 
     //Mostrar el total de tartamientos de un hospital
-    public Long contarTratamientosPorHospital(String nombreHospital) {
-        return session.createQuery("SELECT COUNT(t) FROM Tratamiento t WHERE t.hospital.nombre = :nombre", Long.class)
-                .setParameter("nombre", nombreHospital)
-                .uniqueResult();
+    public List<Object[]> contarTratamientosPorHospital() {
+        return session.createQuery("SELECT t.hospital.nombre, COUNT(t) FROM Tratamiento t GROUP BY t.hospital.nombre", Object[].class)
+                .list();
     }
 }

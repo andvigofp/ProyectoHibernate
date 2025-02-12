@@ -86,6 +86,8 @@ public class PacienteRepositorio implements Repositorio<Paciente>{
                 .uniqueResult();
     }
 
+
+
     //Elinar Paciente por su nombre
     public void eliminarPacientePorNombre(String nombre) {
         Transaction tx = null;

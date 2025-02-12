@@ -66,6 +66,7 @@ public class App {
                 case 3:
                     //Modificar datos del Doctor
                     modificarDoctor();
+                    //actualizar();
                     break;
                 case 4:
                     //Crear Paciente
@@ -225,6 +226,11 @@ public class App {
         }
     }
 
+    /**private static void actualizar() {
+        System.out.println("Ingrese el id del doctor");
+        int id = teclado.nextInt();
+        doctorRepo.modificar(id);
+    }**/
 
     //Método para modificar datos del doctor
     private static void modificarDoctor() {
@@ -430,6 +436,7 @@ public class App {
 
     //Método para asignar el Doctor a un Paciente
     private static void asignarDoctorAPaciente() {
+        Scanner scanner = new Scanner(System.in);
         try {
             String nombreDoctor = null;
             while (true) {
@@ -471,8 +478,23 @@ public class App {
                 }
             }
 
+            // Solicitar la fecha y el estado por teclado
+            LocalDate fecha = null;
+            while (fecha == null) {
+                System.out.println("Ingrese la fecha de la cita (formato: yyyy-MM-dd):");
+                String fechaStr = scanner.nextLine();
+                try {
+                    fecha = LocalDate.parse(fechaStr);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Formato de fecha inválido. Intente nuevamente.");
+                }
+            }
+
+            System.out.println("Ingrese el estado de la cita:");
+            String estado = scanner.nextLine();
+
             // Asignar el doctor al paciente
-            boolean exito = doctorRepo.asignarDoctorAPaciente(nombreDoctor, nombrePaciente);
+            boolean exito = doctorRepo.asignarDoctorAPaciente(nombreDoctor, nombrePaciente, fecha, estado);
             if (exito) {
                 System.out.println("Doctor asignado al paciente con éxito.");
             } else {
@@ -659,39 +681,11 @@ public class App {
 
     //Método para mostrar el número de tratamientos en un  hospital
     private static void mostrarNumeroTratamientosHospital() {
-        String nombreHospital = null;
-
-        // Verificar el nombre del hospital
-        while (nombreHospital == null || nombreHospital.trim().isEmpty() || !nombreHospital.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+")) {
-            nombreHospital = pintarPedirString("Introduzca el nombre del hospital:");
-
-            if (nombreHospital == null || nombreHospital.trim().isEmpty() || !nombreHospital.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+")) {
-                System.out.println("El nombre del hospital solo puede contener letras y tildes. Intente nuevamente.");
-            }
-        }
-
-        try {
-            // Contar el número de tratamientos por hospital
-            Long numeroTratamientos = tratamientoRepo.contarTratamientosPorHospital(nombreHospital);
-
-            // Mostrar el nombre del hospital y el número total de tratamientos
-            if (numeroTratamientos != null && numeroTratamientos > 0) {
-                System.out.println("El número total de tratamientos en el hospital " + nombreHospital + " es: " + numeroTratamientos);
-
-                // Mostrar los tratamientos si existen
-                List<Tratamiento> tratamientos = tratamientoRepo.mostrarDatosTratamientosHospital(nombreHospital);
-                tratamientos.forEach(tratamiento -> {
-                    System.out.println("ID: " + tratamiento.getId());
-                    System.out.println("Tipo: " + tratamiento.getTipo());
-                    System.out.println("Costo: " + tratamiento.getCosto());
-                    System.out.println("Hospital: " + tratamiento.getHospital().getNombre());
-                });
-            } else {
-                System.out.println("No se encontraron tratamientos para el hospital: " + nombreHospital);
-            }
-        } catch (Exception e) {
-            System.out.println("Ocurrió un error al mostrar el número de tratamientos. Por favor, intente nuevamente.");
-            e.printStackTrace();
+        List<Object[]> resultados = tratamientoRepo.contarTratamientosPorHospital();
+        for (Object[] resultado : resultados) {
+            String nombreHospital = (String) resultado[0];
+            Long cantidadTratamientos = (Long) resultado[1];
+            System.out.println("Hospital: " + nombreHospital + " - Tratamientos: " + cantidadTratamientos);
         }
     }
 }

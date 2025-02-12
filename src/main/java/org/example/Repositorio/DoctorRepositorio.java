@@ -9,6 +9,7 @@ import org.hibernate.query.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 
 public class DoctorRepositorio implements Repositorio<Doctor> {
     private Session session;
@@ -49,12 +50,6 @@ public class DoctorRepositorio implements Repositorio<Doctor> {
         }
     }
 
-    //Método para encontrar un doctor por su id
-    public Doctor encontrarUnoPorString(int id) {
-        return session.createQuery("FROM Doctor WHERE id = :id", Doctor.class)
-                .setParameter("id", id)
-                .uniqueResult();
-    }
 
     //Encontrar por uno un doctor por su id
     public Doctor encontrarUnoPorInt(int id) {
@@ -123,6 +118,44 @@ public class DoctorRepositorio implements Repositorio<Doctor> {
         return doctor;
     }
 
+    public void modificar(int id) {
+        Scanner scanner = new Scanner(System.in);
+        Transaction trx = null;
+        try {
+            trx = session.beginTransaction();
+
+            // Crear el query para verificar si el doctor existe
+            Query query = session.createQuery("SELECT d FROM Doctor d WHERE d.id = :id");
+            query.setParameter("id", id);
+            Doctor doctorExistente = (Doctor) query.uniqueResult();
+
+            if (doctorExistente != null) {
+                System.out.println("Inserta los datos para reemplazar");
+                System.out.println("Dime el nombre del doctor");
+                String nombre = scanner.nextLine();
+                System.out.println("Dime su especialidad");
+                String especialidad = scanner.nextLine();
+                System.out.println("Ahora dime su telefono");
+                String telefono = scanner.nextLine();
+
+                // Actualizar los detalles del doctor
+                doctorExistente.setNombre(nombre);
+                doctorExistente.setEspecialidad(especialidad);
+                doctorExistente.setTelefono(telefono);
+
+                // Guardar el doctor actualizado
+                session.update(doctorExistente);
+                trx.commit();
+                System.out.println("Se modificó el doctor satisfactoriamente");
+            } else {
+                System.out.println("No se encontró nadie con esa id");
+            }
+        } catch (Exception e) {
+            if (trx != null) trx.rollback();
+            e.printStackTrace();
+        }
+    }
+
 
     //Método para actualizar los datos del doctor
     @Override
@@ -153,9 +186,8 @@ public class DoctorRepositorio implements Repositorio<Doctor> {
     }
 
 
-
     //Método para asignar un doctor a un paciente
-    public boolean asignarDoctorAPaciente(String nombreDoctor, String nombrePaciente) {
+    public boolean asignarDoctorAPaciente(String nombreDoctor, String nombrePaciente, LocalDate fecha, String estado) {
         Transaction tx = null;
         boolean exito = false;
         try {
@@ -208,8 +240,8 @@ public class DoctorRepositorio implements Repositorio<Doctor> {
                     Cita nuevaCita = new Cita();
                     nuevaCita.setDoctor(doctor);
                     nuevaCita.setPaciente(paciente);
-                    nuevaCita.setFecha(LocalDate.now());
-                    nuevaCita.setEstado("Asignado");
+                    nuevaCita.setFecha(fecha);
+                    nuevaCita.setEstado(estado);
 
                     // Guardar la cita en la base de datos
                     session.save(nuevaCita);
