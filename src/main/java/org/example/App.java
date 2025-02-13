@@ -226,12 +226,7 @@ public class App {
         }
     }
 
-    /**private static void actualizar() {
-        System.out.println("Ingrese el id del doctor");
-        int id = teclado.nextInt();
-        doctorRepo.modificar(id);
-    }**/
-
+    
     //Método para modificar datos del doctor
     private static void modificarDoctor() {
         try {

@@ -2,7 +2,9 @@ package org.example.entidades;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -10,6 +12,8 @@ import java.util.Objects;
 
 // RecibeId.java(Clase para la clave compuesta)
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Embeddable
 public class RecibeId implements Serializable {
     @Column(name = "id_paciente")
@@ -21,12 +25,6 @@ public class RecibeId implements Serializable {
     @Column(name = "fecha_inicio")
     private LocalDate fechaInicio;
 
-    // Constructor
-    public RecibeId(int idPaciente, int idTratamiento, LocalDate fechaInicio) {
-        this.idPaciente = idPaciente;
-        this.idTratamiento = idTratamiento;
-        this.fechaInicio = fechaInicio;
-    }
 
     @Override
     public int hashCode() {

@@ -37,6 +37,12 @@ public class Doctor {
     }
 
 
+    public void setCita(Cita cita) {
+        this.cita = cita;
+        if (cita != null && cita.getDoctor() != this) {
+            cita.setDoctor(this);
+        }
+    }
 
     @Override
     public String toString() {

@@ -42,9 +42,15 @@ public class Cita {
         paciente.getCitas().add(this);
     }
 
+
     public void setDoctor(Doctor doctor) {
+        if (this.doctor != null) {
+            this.doctor.setCita(null); // Desvincular del doctor anterior
+        }
         this.doctor = doctor;
-        doctor.setCita(this);
+        if (doctor != null) {
+            doctor.setCita(this); // Vincular al nuevo doctor
+        }
     }
 
         @Override

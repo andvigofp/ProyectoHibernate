@@ -71,12 +71,10 @@ public class DoctorRepositorio implements Repositorio<Doctor> {
                 if (doctor.getCita() != null) {
                     Cita cita = doctor.getCita();
 
-                    // Desvincular todas las relaciones en cascada
-                    doctor.setCita(null);
+                    // Desvincular la cita del doctor
                     cita.setDoctor(null);
-                    session.update(cita); // Actualizar la cita para desvincular correctamente
 
-                    // Verificar si el paciente tiene otras citas que requieran desvinculación
+                    // Desvincular la cita del paciente
                     if (cita.getPaciente() != null) {
                         cita.getPaciente().getCitas().remove(cita);
                         session.update(cita.getPaciente());
@@ -86,22 +84,21 @@ public class DoctorRepositorio implements Repositorio<Doctor> {
                     session.remove(cita);
                 }
 
-                // Asegurarse de que el doctor no esté asociado con ninguna otra entidad
-                session.flush();
-
                 // Eliminar el doctor
                 session.remove(doctor);
+                tx.commit();
                 System.out.println("Doctor y su cita eliminados con éxito.");
             } else {
                 System.out.println("Doctor no encontrado.");
             }
-
-            tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
+            System.out.println("Ocurrió un error durante el proceso de borrado del doctor. Por favor, intente nuevamente.");
         }
     }
+
+
 
 
     //Método para encontrar un Doctor por su nombre
