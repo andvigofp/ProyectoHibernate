@@ -1,9 +1,6 @@
 package org.example.Repositorio;
 
-import org.example.entidades.Hospital;
-import org.example.entidades.Paciente;
-import org.example.entidades.Recibe;
-import org.example.entidades.Tratamiento;
+import org.example.entidades.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -41,7 +38,7 @@ public class TratamientoRepositorio {
             tx = session.beginTransaction();
 
             // Verificar si el tratamiento existe
-            Tratamiento tratamiento = (Tratamiento) session.get(Tratamiento.class, idTratamiento);
+            Tratamiento tratamiento = session.get(Tratamiento.class, idTratamiento);
             if (tratamiento == null) {
                 System.out.println("El tratamiento con ID " + idTratamiento + " no existe.");
                 tx.rollback();
@@ -55,7 +52,7 @@ public class TratamientoRepositorio {
 
             if (paciente != null) {
                 // Verificar la entrada en Recibe con fechas coincidentes
-                Recibe recibe = (Recibe) session.createQuery("FROM Recibe WHERE id.paciente = :idPaciente AND id.tratamiento = :idTratamiento AND id.fechaInicio = :fechaInicio", Recibe.class)
+                Recibe recibe = (Recibe) session.createQuery("FROM Recibe WHERE id.idPaciente = :idPaciente AND id.idTratamiento = :idTratamiento AND id.fechaInicio = :fechaInicio", Recibe.class)
                         .setParameter("idPaciente", paciente.getId())
                         .setParameter("idTratamiento", idTratamiento)
                         .setParameter("fechaInicio", fechaInicio)
@@ -68,8 +65,17 @@ public class TratamientoRepositorio {
                     tx.commit();
                     System.out.println("Fecha de fin del tratamiento actualizada con éxito.");
                 } else {
-                    System.out.println("Tratamiento no encontrado para el paciente: " + nombrePaciente + " con la fecha de inicio " + fechaInicio + ".");
-                    tx.rollback();
+                    // Crear una nueva instancia de Recibe si no existe
+                    RecibeId recibeId = new RecibeId(paciente.getId(), tratamiento.getId(), fechaInicio);
+                    Recibe nuevoRecibe = new Recibe(recibeId, paciente, tratamiento, fechaFin);
+
+                    // Usar el método addRecibe para añadir el tratamiento al paciente y mantener la relación bidireccional
+                    paciente.addRecibe(nuevoRecibe);
+
+                    // Guardar la relación en la base de datos
+                    session.save(nuevoRecibe);
+                    tx.commit();
+                    System.out.println("Nuevo tratamiento asignado y fecha de fin establecida: " + nuevoRecibe);
                 }
             } else {
                 System.out.println("Paciente no encontrado con el nombre: " + nombrePaciente);
@@ -80,6 +86,8 @@ public class TratamientoRepositorio {
             e.printStackTrace();
         }
     }
+
+
 
 
     //Método para comprobar si existe con ese nombre el hospital

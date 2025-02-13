@@ -21,12 +21,12 @@ public class Recibe {
     private RecibeId id; // Clave primaria compuesta
 
     @ManyToOne() //Muchos a Uno
-    @MapsId("paciente")
+    @MapsId("idPaciente")
     @JoinColumn(name = "id_paciente")
     private Paciente paciente;
 
     @ManyToOne //Muchos a Uno
-    @MapsId("tratamiento")
+    @MapsId("idTratamiento")
     @JoinColumn(name = "tratamiento_id")
     private Tratamiento tratamiento;
 

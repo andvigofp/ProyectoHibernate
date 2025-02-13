@@ -56,6 +56,7 @@ public class Paciente {
         recibe.setPaciente(this);
     }
 
+
     @Override
     public String toString() {
         return "Paciente{" +
