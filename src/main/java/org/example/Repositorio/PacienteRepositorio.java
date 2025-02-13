@@ -104,8 +104,8 @@ public class PacienteRepositorio implements Repositorio<Paciente>{
                     cita.setPaciente(null);
                     if (cita.getDoctor() != null) {
                         Doctor doctor = cita.getDoctor();
-                        doctor.setCita(null); // Desvincular la relación con el doctor
-                        cita.setDoctor(null);
+                        cita.setDoctor(null); // Desvincular la cita del doctor
+                        doctor.setCita(null); // Desvincular el doctor de la cita
                         session.update(doctor); // Actualizar el doctor para desvincular correctamente
                     }
                     session.update(cita); // Actualizar la cita para desvincular correctamente
@@ -135,6 +135,7 @@ public class PacienteRepositorio implements Repositorio<Paciente>{
             e.printStackTrace();
         }
     }
+
 
     //Método para actualizar los datos del paciente
     @Override

@@ -226,7 +226,7 @@ public class App {
         }
     }
 
-    
+
     //Método para modificar datos del doctor
     private static void modificarDoctor() {
         try {
