@@ -87,9 +87,6 @@ public class TratamientoRepositorio {
         }
     }
 
-
-
-
     //Método para comprobar si existe con ese nombre el hospital
     public boolean hospitalExiste(String nombreHospital) {
         Long count = (Long) session.createQuery("SELECT COUNT(h) FROM Hospital h WHERE h.nombre = :nombreHospital")

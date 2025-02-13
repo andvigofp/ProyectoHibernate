@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.print.Doc;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -37,7 +38,23 @@ public class Cita {
         this.estado = estado;
     }
 
-    public void setPaciente(Paciente paciente) {
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, fecha, estado);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cita cita = (Cita) o;
+        return id == cita.id &&
+                Objects.equals(fecha, cita.fecha) &&
+                Objects.equals(estado, cita.estado);
+    }
+
+
+        public void setPaciente(Paciente paciente) {
         this.paciente = paciente;
         if (paciente != null && !paciente.getCitas().contains(this)) {
             paciente.getCitas().add(this);
