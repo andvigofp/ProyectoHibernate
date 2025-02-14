@@ -25,10 +25,12 @@ public class Cita {
 
     @ManyToOne //Muchos a uno
     @JoinColumn(name = "id_paciente")
+    @ToString.Exclude
     private Paciente paciente;
 
     @OneToOne //Uno a Uno
     @JoinColumn(name = "id_doctor")
+    @ToString.Exclude //No incluirlo en ToString para evitar problemas
     private Doctor doctor;
 
 
@@ -36,21 +38,6 @@ public class Cita {
         super();
         this.fecha = fecha;
         this.estado = estado;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fecha, estado);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cita cita = (Cita) o;
-        return id == cita.id &&
-                Objects.equals(fecha, cita.fecha) &&
-                Objects.equals(estado, cita.estado);
     }
 
 

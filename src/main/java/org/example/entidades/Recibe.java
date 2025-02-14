@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
@@ -23,11 +24,13 @@ public class Recibe {
     @ManyToOne() //Muchos a Uno
     @MapsId("idPaciente")
     @JoinColumn(name = "id_paciente")
+    @ToString.Exclude
     private Paciente paciente;
 
     @ManyToOne //Muchos a Uno
     @MapsId("idTratamiento")
     @JoinColumn(name = "tratamiento_id")
+    @ToString.Exclude
     private Tratamiento tratamiento;
 
 

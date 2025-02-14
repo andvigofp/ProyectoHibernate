@@ -27,6 +27,7 @@ public class Hospital {
 
     //Uno a muchos
     @OneToMany(mappedBy = "hospital", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ToString.Exclude
     private List<Tratamiento> tratamientos = new ArrayList<>();
 
     public Hospital(int id, @NonNull String nombre, String ubicacion) {

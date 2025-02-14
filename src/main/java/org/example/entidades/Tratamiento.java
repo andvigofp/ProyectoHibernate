@@ -28,9 +28,11 @@ public class Tratamiento {
 
     @ManyToOne //Muchos a uno
     @JoinColumn(name = "id_hospital")
+    @ToString.Exclude
     private Hospital hospital;
 
     @OneToMany(mappedBy = "tratamiento")
+    @ToString.Exclude
     private List<Recibe> listaCitas;
 
 

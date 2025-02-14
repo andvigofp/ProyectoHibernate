@@ -27,6 +27,7 @@ public class Doctor {
 
     //Uno a Uno
     @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL, fetch =   FetchType.EAGER)
+    @ToString.Exclude
     private Cita cita;
 
 
@@ -36,24 +37,6 @@ public class Doctor {
         this.especialidad = especialidad;
         this.telefono = telefono;
     }
-
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nombre, especialidad, telefono);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Doctor doctor = (Doctor) o;
-        return id == doctor.id &&
-                Objects.equals(nombre, doctor.nombre) &&
-                Objects.equals(especialidad, doctor.especialidad) &&
-                Objects.equals(telefono, doctor.telefono);
-    }
-
 
 
     public void setCita(Cita cita) {

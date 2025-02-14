@@ -168,7 +168,7 @@ public class App {
             // Validar que la especialidad solo contenga letras, puntos, espacios y tildes
             while (true) {
                 especialidad = pintarPedirString("Introduzca la especialidad del doctor:");
-                if (especialidad != null && !especialidad.trim().isEmpty() && especialidad.matches("[a-zA-ZáéíóúÁÉÍÓÚ. ]+")) {
+                if (especialidad != null && !especialidad.trim().isEmpty() && especialidad.matches("[a-zA-ZáéíóúÁÉÍÓÚ.]+")) {
                     break;
                 } else {
                     System.out.println("La especialidad solo debe contener letras, puntos, espacios y tildes. Intente nuevamente.");
@@ -431,7 +431,6 @@ public class App {
 
     //Método para asignar el Doctor a un Paciente
     private static void asignarDoctorAPaciente() {
-        Scanner scanner = new Scanner(System.in);
         try {
             String nombreDoctor = null;
             while (true) {
@@ -477,7 +476,7 @@ public class App {
             LocalDate fecha = null;
             while (fecha == null) {
                 System.out.println("Ingrese la fecha de la cita (formato: yyyy-MM-dd):");
-                String fechaStr = scanner.nextLine();
+                String fechaStr = teclado.nextLine();
                 try {
                     fecha = LocalDate.parse(fechaStr);
                 } catch (DateTimeParseException e) {
@@ -486,7 +485,7 @@ public class App {
             }
 
             System.out.println("Ingrese el estado de la cita:");
-            String estado = scanner.nextLine();
+            String estado = teclado.nextLine();
 
             // Asignar el doctor al paciente
             boolean exito = doctorRepo.asignarDoctorAPaciente(nombreDoctor, nombrePaciente, fecha, estado);
@@ -506,10 +505,12 @@ public class App {
     private static void indicarFechaFinTratamiento() {
         try {
             String nombrePaciente = null;
-            while (nombrePaciente == null || nombrePaciente.trim().isEmpty() || !nombrePaciente.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+")) {
+            while (nombrePaciente == null || nombrePaciente.trim().isEmpty() || !nombrePaciente.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+") || !tratamientoRepo.pacienteExiste(nombrePaciente)) {
                 nombrePaciente = pintarPedirString("Introduzca el nombre del paciente:");
                 if (nombrePaciente == null || nombrePaciente.trim().isEmpty() || !nombrePaciente.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+")) {
                     System.out.println("El nombre del paciente solo puede contener letras y tildes. Intente nuevamente.");
+                } else if (!tratamientoRepo.pacienteExiste(nombrePaciente)) {
+                    System.out.println("El paciente con el nombre '" + nombrePaciente + "' no existe. Intente nuevamente.");
                 }
             }
 
@@ -559,10 +560,12 @@ public class App {
         }
     }
 
+
     // Método para cambiar de hospital un tratamiento
     private static void cambiarHospitalTratamiento() {
         try {
             int tratamientoId = -1;
+            String nombreActualHospital = null;
             String nombreNuevoHospital = null;
 
             // Verificar existencia del tratamiento
@@ -576,27 +579,42 @@ public class App {
                 }
             }
 
-            // Verificar existencia del hospital
+            // Verificar existencia del hospital actual
+            while (nombreActualHospital == null || nombreActualHospital.trim().isEmpty() || !nombreActualHospital.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+")) {
+                nombreActualHospital = pintarPedirString("Introduzca el nombre del hospital actual:");
+                if (nombreActualHospital == null || nombreActualHospital.trim().isEmpty() || !nombreActualHospital.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+")) {
+                    System.out.println("El nombre del hospital actual no puede estar vacío. Intente nuevamente.");
+                } else {
+                    boolean hospitalActualExiste = tratamientoRepo.hospitalExiste(nombreActualHospital);
+                    if (!hospitalActualExiste) {
+                        System.out.println("El nombre del hospital actual no existe. Intente nuevamente.");
+                        nombreActualHospital = null;
+                    }
+                }
+            }
+
+            // Verificar existencia del nuevo hospital
             while (nombreNuevoHospital == null || nombreNuevoHospital.trim().isEmpty() || !nombreNuevoHospital.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+")) {
                 nombreNuevoHospital = pintarPedirString("Introduzca el nombre del nuevo hospital:");
                 if (nombreNuevoHospital == null || nombreNuevoHospital.trim().isEmpty() || !nombreNuevoHospital.matches("[a-zA-ZáéíóúÁÉÍÓÚ ]+")) {
                     System.out.println("El nombre del hospital no puede estar vacío. Intente nuevamente.");
                 } else {
-                    boolean hospitalExiste = tratamientoRepo.hospitalExiste(nombreNuevoHospital);
-                    if (!hospitalExiste) {
-                        System.out.println("El nombre del hospital no existe. Intente nuevamente.");
+                    boolean hospitalNuevoExiste = tratamientoRepo.hospitalExiste(nombreNuevoHospital);
+                    if (!hospitalNuevoExiste) {
+                        System.out.println("El nombre del nuevo hospital no existe. Intente nuevamente.");
                         nombreNuevoHospital = null;
                     }
                 }
             }
 
             // Llamar al método para cambiar el hospital del tratamiento
-            tratamientoRepo.cambiarHospitalTratamiento(tratamientoId, nombreNuevoHospital);
+            tratamientoRepo.cambiarHospitalTratamiento(tratamientoId, nombreActualHospital, nombreNuevoHospital);
         } catch (Exception e) {
             System.out.println("Ocurrió un error al intentar cambiar el hospital y su tratamiento. Por favor, intente nuevamente.");
             e.printStackTrace();
         }
     }
+
 
 
     private static void mostrarDatosPaciente() {

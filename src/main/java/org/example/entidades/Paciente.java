@@ -32,6 +32,7 @@ public class Paciente {
 
     //Uno A Muchos
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ToString.Exclude
     private List<Recibe> tratamientos = new ArrayList<>();
 
     //Uno A Muchos
